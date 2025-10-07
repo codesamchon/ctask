@@ -34,7 +34,7 @@ class StateGridWidget extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: stateColor.withOpacity(0.1),
+                  color: stateColor.withValues(alpha: 0.1),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(8),
                     topRight: Radius.circular(8),
@@ -95,13 +95,13 @@ class StateGridWidget extends StatelessWidget {
           Icon(
             _getStateIcon(state),
             size: 32,
-            color: stateColor.withOpacity(0.5),
+            color: stateColor.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 8),
           Text(
             'No ${state.name} items',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
         ],
@@ -140,7 +140,7 @@ class StateGridWidget extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 2,
             offset: const Offset(0, 1),
           ),
@@ -165,7 +165,7 @@ class StateGridWidget extends StatelessWidget {
                 icon: Icon(
                   Icons.more_vert,
                   size: 16,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
                 onSelected: (value) {
                   if (value == 'delete') {
@@ -199,7 +199,7 @@ class StateGridWidget extends StatelessWidget {
             Text(
               todo.description,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -210,7 +210,7 @@ class StateGridWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: stateColor.withOpacity(0.1),
+                color: stateColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Row(

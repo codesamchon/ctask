@@ -51,7 +51,7 @@ class TodoItemWidget extends StatelessWidget {
                         Text(
                           todo.description,
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -87,10 +87,10 @@ class TodoItemWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: stateColor.withOpacity(0.1),
+                  color: stateColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(
-                    color: stateColor.withOpacity(0.3),
+                    color: stateColor.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -106,7 +106,7 @@ class TodoItemWidget extends StatelessWidget {
                       child: Text(
                         'Reason: ${todo.pendingReason}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                         ),
                       ),
                     ),
@@ -126,7 +126,7 @@ class TodoItemWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: stateColor.withOpacity(0.2),
+        color: stateColor.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(

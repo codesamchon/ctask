@@ -32,20 +32,20 @@ class TodoListWidget extends StatelessWidget {
                   color: AppTheme.getTodoStateColor(
                     state, 
                     Theme.of(context).brightness == Brightness.dark,
-                  ).withOpacity(0.5),
+                  ).withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No ${state.name} items',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   _getEmptyMessage(state),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   textAlign: TextAlign.center,
                 ),

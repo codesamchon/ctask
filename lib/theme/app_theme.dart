@@ -6,14 +6,12 @@ class AppTheme {
   static const Color _primaryColor = Color(0xFF546E7A);
   static const Color _primaryVariant = Color(0xFF37474F);
   static const Color _surfaceColor = Color(0xFFF5F5F5);
-  static const Color _backgroundColor = Color(0xFFFFFFFF);
   static const Color _onSurfaceColor = Color(0xFF212121);
 
   // Dark theme colors
   static const Color _darkPrimaryColor = Color(0xFF78909C);
   static const Color _darkPrimaryVariant = Color(0xFF455A64);
   static const Color _darkSurfaceColor = Color(0xFF303030);
-  static const Color _darkBackgroundColor = Color(0xFF121212);
   static const Color _darkOnSurfaceColor = Color(0xFFE0E0E0);
 
   static ThemeData get lightTheme {
@@ -25,7 +23,6 @@ class AppTheme {
         primaryContainer: _primaryVariant,
         surface: _surfaceColor,
         surfaceContainerHighest: const Color(0xFFE0E0E0),
-        background: _backgroundColor,
         onSurface: _onSurfaceColor,
         onPrimary: Colors.white,
         secondary: const Color(0xFF607D8B),
@@ -93,7 +90,6 @@ class AppTheme {
         primaryContainer: _darkPrimaryVariant,
         surface: _darkSurfaceColor,
         surfaceContainerHighest: const Color(0xFF424242),
-        background: _darkBackgroundColor,
         onSurface: _darkOnSurfaceColor,
         onPrimary: Colors.black,
         secondary: const Color(0xFF90A4AE),
