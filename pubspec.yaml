@@ -1,7 +1,7 @@
 name: ctask
-description: "A new Flutter project."
+description: "CTask - A modern 4-state todo management app with dark mode, data persistence, and responsive design."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
