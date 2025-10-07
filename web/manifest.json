@@ -1,7 +1,7 @@
 {
     "name": "CTask - Todo List App",
     "short_name": "CTask",
-    "start_url": ".",
+    "start_url": "/ctask/",
     "display": "standalone",
     "background_color": "#546E7A",
     "theme_color": "#546E7A",

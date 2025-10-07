@@ -109,15 +109,26 @@ lib/
 - **SEO Optimized**: Proper meta tags and descriptions
 - **Multiple Hosting Options**: Firebase, Netlify, Vercel, GitHub Pages
 
-### 🚀 **Quick Deploy**
+### 🚀 **GitHub Pages Deployment**
 ```bash
-# Build for web
-flutter build web --release
+# Quick setup (Windows)
+./deploy-setup.bat
 
-# Deploy to Firebase (example)
-firebase deploy
+# Quick setup (Mac/Linux)
+./deploy-setup.sh
+
+# Or manual setup
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/YOUR_USERNAME/ctask.git
+git push -u origin main
 ```
 
-See [WEB_DEPLOYMENT.md](WEB_DEPLOYMENT.md) for detailed deployment instructions.
+**Live Demo**: Once deployed, your app will be available at:
+`https://YOUR_USERNAME.github.io/ctask/`
+
+See [GITHUB_PAGES_DEPLOYMENT.md](GITHUB_PAGES_DEPLOYMENT.md) for detailed instructions.
+See [WEB_DEPLOYMENT.md](WEB_DEPLOYMENT.md) for other hosting options.
 
 The app is built with Flutter's Material Design 3 components for a modern, accessible user interface.
