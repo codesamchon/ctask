@@ -110,9 +110,16 @@ If the GitHub Actions build fails:
 
 1. **Check the Actions tab** for error details
 2. **Common issues:**
-   - Flutter version compatibility
-   - Test failures
-   - Code analysis errors
+   - **SDK Version Issues**: Fixed by using flexible SDK constraints
+   - **Flutter Version**: Uses latest stable channel automatically
+   - **Test failures**: Check your test code
+   - **Code analysis errors**: Run `flutter analyze` locally
+
+### SDK Version Error
+If you see "SDK version solving failed":
+- ✅ **Already Fixed**: The project uses flexible SDK constraints (`>=3.0.0 <4.0.0`)
+- ✅ **Auto-Update**: GitHub Actions uses the latest stable Flutter version
+- ✅ **Backward Compatible**: Works with older Flutter versions too
 
 ### App Not Loading
 If the deployed app doesn't load:
