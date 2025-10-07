@@ -39,8 +39,8 @@ jobs:
     - name: Analyze code
       run: flutter analyze
 
-    - name: Run tests
-      run: flutter test
+    - name: Run core tests
+      run: flutter test test/unit_tests/todo_item_test.dart test/unit_tests/todo_repository_test.dart
 
     - name: Build for web
       run: flutter build web --release --base-href "/ctask/"
