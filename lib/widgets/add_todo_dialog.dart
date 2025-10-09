@@ -13,6 +13,7 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? _selectedAssignee;
 
   @override
   void dispose() {
@@ -27,6 +28,8 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
       await provider.addTodo(
         _titleController.text.trim(),
         description: _descriptionController.text.trim(),
+        assignedTo: _selectedAssignee,
+        createdBy: provider.currentUser,
       );
       if (mounted) {
         Navigator.of(context).pop();
@@ -58,6 +61,24 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
               },
               autofocus: true,
               maxLength: 100,
+            ),
+            const SizedBox(height: 16),
+            // Assignee dropdown
+            Consumer<TodoProvider>(
+              builder: (context, provider, child) {
+                return DropdownButtonFormField<String?>(
+                  initialValue: _selectedAssignee,
+                  decoration: const InputDecoration(
+                    labelText: 'Assign To (optional)',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem<String?>(value: null, child: Text('Unassigned')),
+                    ...provider.users.map((u) => DropdownMenuItem<String?>(value: u, child: Text(u))),
+                  ],
+                  onChanged: (v) => setState(() { _selectedAssignee = v; }),
+                );
+              },
             ),
             const SizedBox(height: 16),
             TextFormField(

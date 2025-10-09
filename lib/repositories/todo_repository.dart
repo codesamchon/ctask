@@ -2,14 +2,18 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/todo_item.dart';
+import 'todo_repository_base.dart';
 
-class TodoRepository {
+class TodoRepository implements TodoRepositoryBase {
   static const String _todosKey = 'todos';
   static const String _themeKey = 'theme_mode';
+  static const String _densityKey = 'ui_density';
+  static const String _currentUserKey = 'current_user';
   
   SharedPreferences? _prefs;
 
   // Initialize SharedPreferences
+  @override
   Future<void> init() async {
     try {
       _prefs = await SharedPreferences.getInstance();
@@ -29,6 +33,7 @@ class TodoRepository {
   }
 
   // Save todos to local storage
+  @override
   Future<bool> saveTodos(List<TodoItem> todos) async {
     try {
       final prefsInstance = await prefs;
@@ -45,6 +50,7 @@ class TodoRepository {
   }
 
   // Load todos from local storage
+  @override
   Future<List<TodoItem>> loadTodos() async {
     try {
       final prefsInstance = await prefs;
@@ -66,6 +72,7 @@ class TodoRepository {
   }
 
   // Clear all todos
+  @override
   Future<bool> clearTodos() async {
     try {
       final prefsInstance = await prefs;
@@ -104,7 +111,64 @@ class TodoRepository {
     }
   }
 
+  // Save UI density (a double as string)
+  @override
+  Future<bool> saveDensity(double density) async {
+    try {
+      final prefsInstance = await prefs;
+      final result = await prefsInstance.setDouble(_densityKey, density);
+      log('Saved UI density: $density');
+      return result;
+    } catch (e) {
+      log('Failed to save UI density: $e');
+      return false;
+    }
+  }
+
+  // Load UI density
+  @override
+  Future<double> loadDensity() async {
+    try {
+      final prefsInstance = await prefs;
+      final value = prefsInstance.getDouble(_densityKey) ?? 1.0;
+      log('Loaded UI density: $value');
+      return value;
+    } catch (e) {
+      log('Failed to load UI density: $e');
+      return 1.0;
+    }
+  }
+
+  // Save current selected user
+  @override
+  Future<bool> saveCurrentUser(String userId) async {
+    try {
+      final prefsInstance = await prefs;
+      final result = await prefsInstance.setString(_currentUserKey, userId);
+      log('Saved current user: $userId');
+      return result;
+    } catch (e) {
+      log('Failed to save current user: $e');
+      return false;
+    }
+  }
+
+  // Load current selected user
+  @override
+  Future<String> loadCurrentUser() async {
+    try {
+      final prefsInstance = await prefs;
+      final value = prefsInstance.getString(_currentUserKey) ?? 'KH';
+      log('Loaded current user: $value');
+      return value;
+    } catch (e) {
+      log('Failed to load current user: $e');
+      return 'KH';
+    }
+  }
+
   // Export todos as JSON string (for backup/sharing)
+  @override
   Future<String?> exportTodos() async {
     try {
       final todos = await loadTodos();
@@ -119,6 +183,7 @@ class TodoRepository {
   }
 
   // Import todos from JSON string (for backup/sharing)
+  @override
   Future<bool> importTodos(String jsonString) async {
     try {
       final List<dynamic> jsonList = jsonDecode(jsonString);
@@ -133,6 +198,7 @@ class TodoRepository {
   }
 
   // Get storage info (for debugging/monitoring)
+  @override
   Future<Map<String, dynamic>> getStorageInfo() async {
     try {
       final prefsInstance = await prefs;

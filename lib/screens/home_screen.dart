@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../utils/open_link.dart';
 import '../providers/todo_provider.dart';
 import '../models/todo_item.dart';
 import '../widgets/state_grid_widget.dart';
 import '../widgets/add_todo_dialog.dart';
 import '../widgets/pending_reason_dialog.dart';
+import '../widgets/settings_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onThemeToggle;
@@ -49,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CTask'),
+        title: const Text('Co-op Task'),
         actions: [
           // Error indicator
           Consumer<TodoProvider>(
@@ -86,6 +88,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Icons.dark_mode,
             ),
             onPressed: widget.onThemeToggle,
+          ),
+          // Current user selector
+          Consumer<TodoProvider>(
+            builder: (context, provider, child) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: SizedBox(
+                  width: 72,
+                  child: DropdownButton<String>(
+                    value: provider.currentUser,
+                    isDense: true,
+                    isExpanded: false,
+                    underline: const SizedBox.shrink(),
+                    items: provider.users.map((u) => DropdownMenuItem(
+                      value: u,
+                      child: Text(u, textAlign: TextAlign.center),
+                    )).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        provider.setCurrentUser(value);
+                      }
+                    },
+                  ),
+                ),
+              );
+            },
           ),
           // Menu with data management options
           PopupMenuButton<String>(
@@ -124,6 +152,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const PopupMenuDivider(),
               const PopupMenuItem(
+                value: 'settings',
+                child: Row(
+                  children: [
+                    Icon(Icons.settings),
+                    SizedBox(width: 8),
+                    Text('Settings'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
                 value: 'clear',
                 child: Row(
                   children: [
@@ -133,6 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+              // Hidden debug menu items removed
             ],
           ),
         ],
@@ -141,6 +180,53 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Left-aligned external links below the AppBar — responsive
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Tooltip(
+                    message: 'Open check lists in a new tab',
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        const url = 'https://checklists-dcbee.web.app/';
+                        final messenger = ScaffoldMessenger.of(context);
+                        final ok = await openLink(url);
+                        if (!ok && mounted) {
+                          messenger.showSnackBar(
+                            const SnackBar(content: Text('Could not open link')),
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.list_alt_outlined, size: 18),
+                      label: const Text('Move to check lists'),
+                      style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8.0)),
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'Open shared storage (SharePoint)',
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        const url = 'https://103z26-my.sharepoint.com/:f:/g/personal/asyourwish_103z26_onmicrosoft_com/Ej12V2oYVVZMpNNYwEYRpO8BQZzmCfCopnJpzkbKWYqPCQ?e=QCs1gj';
+                        final messenger = ScaffoldMessenger.of(context);
+                        final ok = await openLink(url);
+                        if (!ok && mounted) {
+                          messenger.showSnackBar(
+                            const SnackBar(content: Text('Could not open link')),
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.folder_shared_outlined, size: 18),
+                      label: const Text('Move to Shared Storage'),
+                      style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8.0)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // Summary Row
             Consumer<TodoProvider>(
               builder: (context, provider, child) {
@@ -186,16 +272,24 @@ class _HomeScreenState extends State<HomeScreen> {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   // Responsive grid based on screen width
-                  int crossAxisCount = 2;
-                  double childAspectRatio = 0.8;
-                  
+                  final provider = Provider.of<TodoProvider>(context);
+                  final density = provider.density;
+                  int crossAxisCount = 1;
+                  double baseAspect = 1.1;
+
+                  // Use single-column layout for narrow/mobile screens
                   if (constraints.maxWidth > 800) {
                     crossAxisCount = 4; // 4 columns on wide screens
-                    childAspectRatio = 0.7;
+                    baseAspect = 0.7;
                   } else if (constraints.maxWidth > 600) {
                     crossAxisCount = 2; // 2 columns on medium screens
-                    childAspectRatio = 0.9;
+                    baseAspect = 0.9;
                   }
+
+                  // Adjust tile height by density: lower density -> more compact -> increase aspect ratio
+                  var childAspectRatio = baseAspect / density;
+                  // clamp aspect ratio to avoid extreme values which can cause RenderFlex overflow
+                  childAspectRatio = (childAspectRatio.clamp(0.4, 2.0)).toDouble();
                   
                   return GridView.count(
                     crossAxisCount: crossAxisCount,
@@ -306,11 +400,73 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'export':
         await _exportData();
         break;
+      case 'settings':
+        showDialog(context: context, builder: (_) => const SettingsDialog());
+        break;
       case 'import':
         await _importData();
         break;
       case 'clear':
         await _clearAllData();
+        break;
+      case 'debug':
+        // Dump provider state to the console
+        try {
+          // Using print/log for quick debugging
+          final stateInfo = {
+            'currentUser': provider.currentUser,
+            'users': provider.users,
+            'density': provider.density,
+            'totalTodos': provider.getTodoCount(),
+            'todoByState': {
+              'todo': provider.getTodoCountByState(TodoState.todo),
+              'doing': provider.getTodoCountByState(TodoState.doing),
+              'pending': provider.getTodoCountByState(TodoState.pending),
+              'done': provider.getTodoCountByState(TodoState.done),
+            }
+          };
+          // ignore: avoid_print
+          print('CTask Debug Info: $stateInfo');
+        } catch (e) {
+          // ignore: avoid_print
+          print('Failed to dump debug info: $e');
+        }
+        break;
+      case 'check_db':
+        {
+          final result = await provider.checkBackend();
+          if (!mounted) return;
+          // Ensure dialog is shown synchronously on the next frame to avoid using context across async gaps
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('Backend Info'),
+                content: SingleChildScrollView(
+                  child: Text(result.toString()),
+                ),
+                actions: [
+                  TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
+                ],
+              ),
+            );
+          });
+        }
+        break;
+      case 'seed_db':
+        {
+          final success = await provider.seedSampleTodos();
+          if (!mounted) return;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(success ? 'Seeded sample todos' : 'Failed to seed todos'),
+              ),
+            );
+          });
+        }
         break;
     }
   }
@@ -335,10 +491,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: SelectableText(
-                  exportData,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontFamily: 'monospace',
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SelectableText(
+                    exportData,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontFamily: 'monospace',
+                    ),
                   ),
                 ),
               ),
@@ -393,14 +552,17 @@ class _HomeScreenState extends State<HomeScreen> {
     if (result != null && result.isNotEmpty && mounted) {
       final provider = Provider.of<TodoProvider>(context, listen: false);
       final success = await provider.importTodos(result);
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(success ? 'Data imported successfully!' : 'Failed to import data'),
-            backgroundColor: success ? Colors.green : Colors.red,
-          ),
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(success ? 'Data imported successfully!' : 'Failed to import data'),
+              backgroundColor: success ? Colors.green : Colors.red,
+            ),
+          );
+        });
       }
     }
   }
@@ -427,14 +589,17 @@ class _HomeScreenState extends State<HomeScreen> {
     if (confirmed == true && mounted) {
       final provider = Provider.of<TodoProvider>(context, listen: false);
       await provider.clearAllTodos();
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('All data cleared'),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('All data cleared'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        });
       }
     }
   }

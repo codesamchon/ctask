@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "142573738055",
+    "project_id": "ctask-a7cbb",
+    "storage_bucket": "ctask-a7cbb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142573738055:android:071e661477fa2c2807b962",
+        "android_client_info": {
+          "package_name": "com.example.ctask"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvUA7hin7p_V4voi5Dgqw2doOlLw-QD9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

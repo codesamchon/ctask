@@ -11,6 +11,8 @@ class TodoItem {
   String description;
   TodoState state;
   String? pendingReason; // Only used when state is pending
+  String createdBy;
+  String? assignedTo;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -20,6 +22,8 @@ class TodoItem {
     this.description = '',
     this.state = TodoState.todo,
     this.pendingReason,
+    this.createdBy = 'KH',
+    this.assignedTo,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -31,6 +35,8 @@ class TodoItem {
     String? description,
     TodoState? state,
     String? pendingReason,
+    String? createdBy,
+    String? assignedTo,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -40,6 +46,8 @@ class TodoItem {
       description: description ?? this.description,
       state: state ?? this.state,
       pendingReason: pendingReason ?? this.pendingReason,
+      createdBy: createdBy ?? this.createdBy,
+      assignedTo: assignedTo ?? this.assignedTo,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -80,6 +88,8 @@ class TodoItem {
       'description': description,
       'state': state.name,
       'pendingReason': pendingReason,
+      'createdBy': createdBy,
+      'assignedTo': assignedTo,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -95,6 +105,8 @@ class TodoItem {
         orElse: () => TodoState.todo,
       ),
       pendingReason: json['pendingReason'],
+      createdBy: json['createdBy'] ?? 'KH',
+      assignedTo: json['assignedTo'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
